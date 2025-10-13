@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Loan Default Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poiret+One&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700;800&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #ffffff 0%, #D4D8DD 30%, #AAB7B7 60%, #2E4156 85%, #1A2D42 100%);
+            min-height: 100vh;
+            font-family: 'Oswald', sans-serif;
+        }
+        
+        .heading-font {
+            font-family: "Poiret One", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        input, select {
+            font-size: 0.875rem;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="heading-font text-4xl font-bold text-gray-800 mb-2 drop-shadow">
+                🏦   BANK   LOAN   DEFAULT   PREDICTION
+            </h1>
+            <p class="text-gray-700 text-sm tracking-wider">Powered by Random Forest Machine Learning</p>
+        </div>
+
+        <!-- Main Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Form Section -->
+            <div class="lg:col-span-2">
+                <div class="glass rounded-2xl shadow-2xl p-6">
+                    <form id="loanForm">
+                        <!-- 3-column Grid Layout for better spacing -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Existing Account</label>
+                                <select name="existing_account" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A11">< 0 DM</option>
+                                    <option value="A12">0-200 DM</option>
+                                    <option value="A13">>= 200 DM</option>
+                                    <option value="A14">No account</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Duration (months)</label>
+                                <input type="number" name="duration" min="1" max="72" value="24" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Credit History</label>
+                                <select name="credit_history" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A30">No credits taken</option>
+                                    <option value="A31">All paid back</option>
+                                    <option value="A32">Existing paid back</option>
+                                    <option value="A33">Delay in past</option>
+                                    <option value="A34">Critical account</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Purpose</label>
+                                <select name="purpose" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A40">Car (new)</option>
+                                    <option value="A41">Car (used)</option>
+                                    <option value="A42">Furniture</option>
+                                    <option value="A43">Radio/TV</option>
+                                    <option value="A44">Appliances</option>
+                                    <option value="A45">Repairs</option>
+                                    <option value="A46">Education</option>
+                                    <option value="A47">Vacation</option>
+                                    <option value="A48">Retraining</option>
+                                    <option value="A49">Business</option>
+                                    <option value="A410">Others</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Credit Amount (DM)</label>
+                                <input type="number" name="credit_amount" min="250" max="20000" value="5000" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Savings Account</label>
+                                <select name="savings" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A61">< 100 DM</option>
+                                    <option value="A62">100-500 DM</option>
+                                    <option value="A63">500-1000 DM</option>
+                                    <option value="A64">>= 1000 DM</option>
+                                    <option value="A65">Unknown</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Employment</label>
+                                <select name="employment" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A71">Unemployed</option>
+                                    <option value="A72">< 1 year</option>
+                                    <option value="A73">1-4 years</option>
+                                    <option value="A74">4-7 years</option>
+                                    <option value="A75">>= 7 years</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Installment Rate (%)</label>
+                                <input type="number" name="installment_rate" min="1" max="4" value="2" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Personal Status</label>
+                                <select name="personal_status" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A91">Male: divorced</option>
+                                    <option value="A92">Female: divorced/married</option>
+                                    <option value="A93">Male: single</option>
+                                    <option value="A94">Male: married/widowed</option>
+                                    <option value="A95">Female: single</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Other Debtors</label>
+                                <select name="debtors" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A101">None</option>
+                                    <option value="A102">Co-applicant</option>
+                                    <option value="A103">Guarantor</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Residence Since</label>
+                                <input type="number" name="residence" min="1" max="4" value="2" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Property</label>
+                                <select name="property" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A121">Real estate</option>
+                                    <option value="A122">Building society</option>
+                                    <option value="A123">Car or other</option>
+                                    <option value="A124">No property</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Age (years)</label>
+                                <input type="number" name="age" min="18" max="100" value="35" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Other Plans</label>
+                                <select name="other_plans" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A141">Bank</option>
+                                    <option value="A142">Stores</option>
+                                    <option value="A143">None</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Housing</label>
+                                <select name="housing" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A151">Rent</option>
+                                    <option value="A152">Own</option>
+                                    <option value="A153">For free</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Existing Credits</label>
+                                <input type="number" name="existing_credits" min="1" max="4" value="1" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Job</label>
+                                <select name="job" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A171">Unemployed/Unskilled</option>
+                                    <option value="A172">Unskilled</option>
+                                    <option value="A173">Skilled</option>
+                                    <option value="A174">Management</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Dependents</label>
+                                <input type="number" name="dependents" min="1" max="2" value="1" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Telephone</label>
+                                <select name="telephone" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A191">None</option>
+                                    <option value="A192">Yes, registered</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-800 mb-1.5">Foreign Worker</label>
+                                <select name="foreign_worker" class="w-full px-3 py-2 bg-white bg-opacity-90 border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-blue-400" required>
+                                    <option value="A201">Yes</option>
+                                    <option value="A202">No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mt-6">
+                            <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg tracking-wider">
+                                🔮 PREDICT DEFAULT RISK
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div class="lg:col-span-1">
+                <div id="result" class="glass rounded-2xl shadow-2xl p-6 h-full flex flex-col justify-center hidden">
+                    <h2 class="heading-font text-2xl font-bold mb-6 text-gray-800 text-center">PREDICTION RESULT</h2>
+                    <div class="space-y-4">
+                        <div class="bg-white bg-opacity-60 rounded-xl p-4 text-center">
+                            <p class="text-xs text-gray-700 mb-2 tracking-wider font-medium">PREDICTION</p>
+                            <p id="prediction" class="text-2xl font-bold text-gray-900"></p>
+                        </div>
+                        <div class="bg-white bg-opacity-60 rounded-xl p-4 text-center">
+                            <p class="text-xs text-gray-700 mb-2 tracking-wider font-medium">DEFAULT PROBABILITY</p>
+                            <p id="defaultProb" class="text-2xl font-bold text-gray-900"></p>
+                        </div>
+                        <div class="bg-white bg-opacity-60 rounded-xl p-4 text-center">
+                            <p class="text-xs text-gray-700 mb-2 tracking-wider font-medium">RISK LEVEL</p>
+                            <p id="riskLevel" class="text-2xl font-bold text-gray-900"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Placeholder when no result -->
+                <div id="placeholder" class="glass rounded-2xl shadow-2xl p-6 h-full flex flex-col justify-center items-center text-center">
+                    <div class="text-gray-800">
+                        <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <p class="text-lg font-semibold mb-2 tracking-wide">FILL OUT THE FORM</p>
+                        <p class="text-sm opacity-70 tracking-wide">Results will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            // Convert numeric fields
+            const numericFields = ['duration', 'credit_amount', 'installment_rate', 'residence', 'age', 'existing_credits', 'dependents'];
+            numericFields.forEach(field => {
+                data[field] = parseInt(data[field]);
+            });
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    alert('Error: ' + result.error);
+                    return;
+                }
+                
+                // Display results
+                document.getElementById('prediction').textContent = result.prediction;
+                document.getElementById('defaultProb').textContent = (result.probability.default * 100).toFixed(1) + '%';
+                document.getElementById('riskLevel').textContent = result.risk_level;
+                document.getElementById('placeholder').classList.add('hidden');
+                document.getElementById('result').classList.remove('hidden');
+            } catch (error) {
+                alert('Error making prediction: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
