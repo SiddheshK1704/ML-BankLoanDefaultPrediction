@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Model Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Oswald', sans-serif;
+            background: url('/static/images/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            z-index: -1;
+        }
+        
+        .heading-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+        }
+        
+        .btn-primary {
+            background: #ffffff;
+            color: #000000;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .comparison-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+        
+        .comparison-table th {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        
+        .comparison-table td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <!-- Navigation -->
+    <nav class="mb-8">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="text-white hover:text-gray-300 font-light text-sm tracking-wide transition">← Back</a>
+            <a href="/predict" class="btn-primary px-6 py-2.5 rounded-lg text-sm tracking-wide">
+                Prediction
+            </a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="heading-font text-5xl md:text-6xl font-bold text-white mb-4">
+                Admin Portal
+            </h1>
+            <p class="text-gray-400 text-sm tracking-wide font-light">Model Training & Comparison Dashboard</p>
+        </div>
+
+        <!-- Current Model Info -->
+        <div class="card rounded-2xl p-8 mb-8">
+            <h2 class="heading-font text-2xl font-bold text-white mb-6">Current Model Status</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="stat-box rounded-xl p-6 text-center">
+                    <p class="text-xs text-gray-500 mb-2 tracking-widest font-light">ACTIVE MODEL</p>
+                    <p id="currentModelType" class="text-lg font-semibold text-white">Loading...</p>
+                </div>
+                <div class="stat-box rounded-xl p-6 text-center">
+                    <p class="text-xs text-gray-500 mb-2 tracking-widest font-light">FEATURES</p>
+                    <p id="featuresCount" class="text-lg font-semibold text-white">-</p>
+                </div>
+                <div class="stat-box rounded-xl p-6 text-center">
+                    <p class="text-xs text-gray-500 mb-2 tracking-widest font-light">STATUS</p>
+                    <p id="modelStatus" class="text-lg font-semibold text-white">-</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Training Section -->
+        <div class="card rounded-2xl p-8 mb-8">
+            <h2 class="heading-font text-3xl font-bold text-white mb-8">Train Models</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">Random Forest</h3>
+                    <p class="text-sm text-gray-400 mb-6 font-light">Basic classifier with balanced weights</p>
+                    <button onclick="trainModel('random_forest')" class="w-full btn-secondary py-3 px-4 rounded-lg text-sm tracking-wide">
+                        TRAIN MODEL
+                    </button>
+                </div>
+
+                <div class="card rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">Random Forest (Tuned)</h3>
+                    <p class="text-sm text-gray-400 mb-6 font-light">Optimized with RandomizedSearchCV</p>
+                    <button onclick="trainModel('random_forest_tuned')" class="w-full btn-secondary py-3 px-4 rounded-lg text-sm tracking-wide">
+                        TRAIN MODEL
+                    </button>
+                </div>
+
+                <div class="card rounded-xl p-6" style="border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-semibold text-white">XGBoost</h3>
+                        <span class="text-xs px-2 py-1 rounded-full font-light tracking-wider" style="background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.8);">RECOMMENDED</span>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-6 font-light">Gradient boosting with 78% accuracy</p>
+                    <button onclick="trainModel('xgboost')" class="w-full btn-primary py-3 px-4 rounded-lg text-sm tracking-wide">
+                        TRAIN MODEL
+                    </button>
+                </div>
+
+                <div class="card rounded-xl p-6" style="border: 1px solid rgba(255, 255, 255, 0.2);">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-semibold text-white">XGBoost Ensemble</h3>
+                        <span class="text-xs px-2 py-1 rounded-full font-light tracking-wider" style="background: rgba(255, 255, 255, 0.15); color: #ffffff;">BEST</span>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-6 font-light">Stacked: XGBoost + RF + Gradient Boosting</p>
+                    <button onclick="trainModel('xgboost_ensemble')" class="w-full btn-primary py-3 px-4 rounded-lg text-sm tracking-wide">
+                        TRAIN MODEL
+                    </button>
+                </div>
+            </div>
+
+            <div id="trainingResult" class="mt-8 hidden">
+                <div class="rounded-xl p-6 text-center" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3);">
+                    <h3 class="heading-font text-xl font-bold text-white mb-2">✓ Training Complete</h3>
+                    <p id="trainingMessage" class="text-gray-300 mb-2 font-light"></p>
+                    <p id="trainingAccuracy" class="text-2xl font-bold text-green-400"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Comparison Section -->
+        <div class="card rounded-2xl p-8">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="heading-font text-3xl font-bold text-white">Model Comparison</h2>
+                <button onclick="compareModels()" class="btn-primary px-6 py-3 rounded-lg text-sm tracking-wide">
+                    RUN COMPARISON
+                </button>
+            </div>
+
+            <div id="comparisonLoading" class="text-center py-16 hidden">
+                <div class="loading mx-auto mb-4"></div>
+                <p class="text-white text-lg font-light">Training and comparing models...</p>
+                <p class="text-gray-500 text-sm mt-2 font-light">This may take a few minutes</p>
+            </div>
+
+            <div id="comparisonResults" class="hidden">
+                <div class="overflow-x-auto">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th class="text-left px-4 py-4">Rank</th>
+                                <th class="text-left px-4 py-4">Model</th>
+                                <th class="text-center px-4 py-4">Accuracy</th>
+                                <th class="text-center px-4 py-4">F1 Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="comparisonPlaceholder" class="text-center py-16">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <p class="text-gray-500 font-light">Click "Run Comparison" to evaluate all models</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch model info on load
+        fetchModelInfo();
+
+        function fetchModelInfo() {
+            fetch('/model_info')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('currentModelType').textContent = data.model_type || 'Unknown';
+                    document.getElementById('featuresCount').textContent = data.features_count || '-';
+                    document.getElementById('modelStatus').textContent = data.is_loaded ? 'Active' : 'Inactive';
+                    document.getElementById('modelStatus').className = data.is_loaded 
+                        ? 'text-lg font-semibold text-green-400' 
+                        : 'text-lg font-semibold text-red-400';
+                })
+                .catch(error => {
+                    console.error('Error fetching model info:', error);
+                });
+        }
+
+        async function trainModel(modelType) {
+            const button = event.target;
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.innerHTML = '<div class="loading mx-auto"></div>';
+            
+            document.getElementById('trainingResult').classList.add('hidden');
+            
+            try {
+                const response = await fetch('/retrain', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ model: modelType })
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    alert('Error: ' + result.error);
+                    return;
+                }
+                
+                document.getElementById('trainingMessage').textContent = result.message;
+                document.getElementById('trainingAccuracy').textContent = 'Accuracy: ' + result.accuracy;
+                document.getElementById('trainingResult').classList.remove('hidden');
+                
+                // Update model info
+                fetchModelInfo();
+                
+                // Scroll to result
+                document.getElementById('trainingResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } catch (error) {
+                alert('Error training model: ' + error.message);
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        }
+
+        async function compareModels() {
+            document.getElementById('comparisonPlaceholder').classList.add('hidden');
+            document.getElementById('comparisonLoading').classList.remove('hidden');
+            document.getElementById('comparisonResults').classList.add('hidden');
+            
+            try {
+                const response = await fetch('/compare', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    alert('Error: ' + result.error);
+                    document.getElementById('comparisonPlaceholder').classList.remove('hidden');
+                    return;
+                }
+                
+                // Display comparison results
+                const tableBody = document.getElementById('comparisonTableBody');
+                tableBody.innerHTML = '';
+                
+                result.results.forEach((model, index) => {
+                    const row = document.createElement('tr');
+                    
+                    const rankBadge = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+                    
+                    row.innerHTML = `
+                        <td class="px-4 py-4 font-semibold">${rankBadge}</td>
+                        <td class="px-4 py-4 font-light">${model.Model}</td>
+                        <td class="px-4 py-4 text-center font-semibold ${index === 0 ? 'text-green-400' : 'text-white'}">${model.Accuracy}</td>
+                        <td class="px-4 py-4 text-center font-semibold ${index === 0 ? 'text-green-400' : 'text-white'}">${model['F1 Score']}</td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                document.getElementById('comparisonLoading').classList.add('hidden');
+                document.getElementById('comparisonResults').classList.remove('hidden');
+            } catch (error) {
+                alert('Error comparing models: ' + error.message);
+                document.getElementById('comparisonLoading').classList.add('hidden');
+                document.getElementById('comparisonPlaceholder').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
