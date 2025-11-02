@@ -91,6 +91,19 @@
             box-shadow: 0 20px 40px rgba(255, 255, 255, 0.2);
         }
 
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
         .feature-pill {
             display: inline-flex;
             align-items: center;
@@ -126,8 +139,13 @@
         <nav class="mb-8">
             <div class="flex items-center justify-between">
                 <a href="/" class="text-white hover:text-gray-300 font-light text-sm tracking-wide transition">← Back</a>
-                <div class="px-4 py-1.5 rounded-full text-xs font-light tracking-wider" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.6);">
-                    <span id="currentModel">Loading...</span>
+                <div class="flex items-center gap-3">
+                    <div class="px-4 py-1.5 rounded-full text-xs font-light tracking-wider" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.6);">
+                        <span id="currentModel">Loading...</span>
+                    </div>
+                    <a href="/admin" class="btn-secondary px-5 py-2 rounded-lg text-xs tracking-wide font-semibold">
+                        Change Your Model
+                    </a>
                 </div>
             </div>
         </nav>

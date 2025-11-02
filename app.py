@@ -257,6 +257,68 @@ def train_random_forest_with_tuning():
 
     return accuracy
 
+def train_gradient_boosting_model():
+    """Train Gradient Boosting model"""
+    global model, label_encoders, feature_names, model_type
+    
+    model_type = "Gradient Boosting"
+    print("Loading and preprocessing data...")
+    df = load_and_preprocess_data()
+    
+    X = df.drop('class', axis=1)
+    y = df['class']
+    
+    label_encoders = {}
+    categorical_cols = X.select_dtypes(include=['object']).columns
+    
+    for col in categorical_cols:
+        le = LabelEncoder()
+        X[col] = le.fit_transform(X[col].astype(str))
+        label_encoders[col] = le
+    
+    feature_names = X.columns.tolist()
+    
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    
+    print("Training Gradient Boosting model...")
+    model = GradientBoostingClassifier(
+        n_estimators=300,
+        learning_rate=0.05,
+        max_depth=5,
+        min_samples_split=10,
+        min_samples_leaf=5,
+        subsample=0.8,
+        random_state=42
+    )
+    
+    model.fit(X_train, y_train)
+    
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    
+    print(f"\n{'='*50}")
+    print(f"Gradient Boosting Model trained successfully!")
+    print(f"{'='*50}")
+    print(f"Accuracy: {accuracy:.2%}")
+    print(f"\nClassification Report:")
+    print(classification_report(y_test, y_pred, target_names=['Good Credit', 'Default Risk']))
+    print(f"\nConfusion Matrix:")
+    print(confusion_matrix(y_test, y_pred))
+    print(f"{'='*50}\n")
+    
+    feature_importance = pd.DataFrame({
+        'feature': feature_names,
+        'importance': model.feature_importances_
+    }).sort_values('importance', ascending=False)
+    
+    print("Top 10 Most Important Features:")
+    print(feature_importance.head(10))
+    print(f"{'='*50}\n")
+    
+    return accuracy
+
 def train_xgboost_model():
     """Train XGBoost model"""
     global model, label_encoders, feature_names, model_type
@@ -495,6 +557,8 @@ def retrain():
             accuracy = train_random_forest_model()
         elif model_choice == 'random_forest_tuned':
             accuracy = train_random_forest_with_tuning()
+        elif model_choice == 'gradient_boosting':
+            accuracy = train_gradient_boosting_model()
         elif model_choice == 'xgboost':
             accuracy = train_xgboost_model()
         elif model_choice == 'xgboost_ensemble':
